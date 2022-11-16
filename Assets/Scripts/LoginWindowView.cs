@@ -111,6 +111,7 @@ public class LoginWindowView : UIScreen
         //Show our next screen if we logged in successfully.
         Panel.SetActive(false);
         Next.SetActive(true);
+        Gamemanager.instance.GameState = Gamemanager.State.Start;
         //UIScreenController.Instance.Show(UIScreenController.MainScreenId, false, true);
         //UIScreenController.Instance.Show(UIScreenController.TutorialScreenId, false, true, false, Tween.TweenStyle.EaseOut, OnTutorialScreenShown);
     }
