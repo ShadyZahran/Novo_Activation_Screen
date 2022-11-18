@@ -6,7 +6,6 @@ using PlayFab.ClientModels;
 using LoginResult = PlayFab.ClientModels.LoginResult;
 using System;
 //using PlayFab.Json;
-using PlayFab.PfEditor.Json;
 
 #if FACEBOOK
 using Facebook.Unity;

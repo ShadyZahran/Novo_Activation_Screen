@@ -1,6 +1,6 @@
 using PlayFab;
 using PlayFab.ClientModels;
-using PlayFab.PfEditor.Json;
+//using PlayFab.PfEditor.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -73,7 +73,7 @@ public class RegistrationWindowView : UIScreen
 
         Debug.Log("Successfull setting user data");
         // CloudScript (Legacy) returns arbitrary results, so you have to evaluate them one step and one parameter at a time
-        Debug.Log(JsonWrapper.SerializeObject(obj.FunctionResult));
+        //Debug.Log(JsonWrapper.SerializeObject(obj.FunctionResult));
         Debug.Log(obj.FunctionResult);
 
 
