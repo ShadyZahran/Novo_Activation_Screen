@@ -29,7 +29,7 @@ public class Gamemanager : MonoBehaviour
     public int gesture_SwipeDown = 4;
 
     SensorValues mySensorValues;
-
+    public bool clearData;
 
     private void Awake()
     {
@@ -43,6 +43,10 @@ public class Gamemanager : MonoBehaviour
         }
         GameState = State.Login;
         Allplayers = new List<PlayerInfo>();
+        if (clearData)
+        {
+            PlayerPrefs.DeleteAll();
+        }
     }
 
     private void Update()
@@ -76,8 +80,9 @@ public class Gamemanager : MonoBehaviour
                     Debug.Log("pressure A pressed");
                     LoadScreen(Menu_WelcomeScreen, Menu_TutorialScreen);
                     GameState = State.Tutorial;
+                    ResetSensorValues();
                 }
-                else if (Input.GetKey(KeyCode.Alpha1))
+                else if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
                     Debug.Log("fake pressure data");
                     OnDataReceived("1/0/0/0/0/0", null);
@@ -93,8 +98,9 @@ public class Gamemanager : MonoBehaviour
                     QuestionsManager.instance.UpdateQuestionScreen();
                     LoadScreen(Menu_TutorialScreen, Menu_QuestionScreen);
                     GameState = State.Question1;
+                    ResetSensorValues();
                 }
-                else if (Input.GetKey(KeyCode.Alpha2))
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
                 {
                     Debug.Log("fake gesture data");
                     OnDataReceived("1/0/0/1/0/0", null);
@@ -110,41 +116,45 @@ public class Gamemanager : MonoBehaviour
                 {
                     Debug.Log("Question1: gesture A swiperight");
                     QuestionsManager.instance.Question_OnSwipeRight();
+                    ResetSensorValues();
                 }
                 else if (mySensorValues.Gesture_A == gesture_SwipeLeft)
                 {
                     Debug.Log("Question1: gesture A swipeleft");
                     QuestionsManager.instance.Question_OnSwipeLeft();
+                    ResetSensorValues();
                 }
                 else if (mySensorValues.Gesture_A == gesture_SwipeUp)
                 {
                     Debug.Log("Question1: gesture A swipeup");
                     QuestionsManager.instance.Question_OnSwipeUp();
+                    ResetSensorValues();
                 }
                 else if (mySensorValues.Gesture_A == gesture_SwipeDown)
                 {
                     Debug.Log("Question1: gesture A swipedown");
                     QuestionsManager.instance.Question_OnSwipeDown();
+                    ResetSensorValues();
                 }
 
 
                 ////////// FAKE DATA ///////////
-                else if (Input.GetKey(KeyCode.Alpha3))
+                else if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
                     Debug.Log("fake gesture A swipe right data");
                     OnDataReceived("1/0/0/1/0/0", null);
                 }
-                else if (Input.GetKey(KeyCode.Alpha4))
+                else if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
                     Debug.Log("fake gesture A swipe left data");
                     OnDataReceived("1/0/0/2/0/0", null);
                 }
-                else if (Input.GetKey(KeyCode.Alpha5))
+                else if (Input.GetKeyDown(KeyCode.UpArrow))
                 {
                     Debug.Log("fake gesture A swipe up data");
                     OnDataReceived("1/0/0/3/0/0", null);
                 }
-                else if (Input.GetKey(KeyCode.Alpha6))
+                else if (Input.GetKeyDown(KeyCode.DownArrow))
                 {
                     Debug.Log("fake gesture A swipe down data");
                     OnDataReceived("1/0/0/4/0/0", null);
@@ -312,12 +322,11 @@ public class Gamemanager : MonoBehaviour
             mySensorValues.Gesture_B = int.Parse(values[4]);
             mySensorValues.Gesture_C = int.Parse(values[5]);
             Debug.Log("Sensor values parsed successfully");
-            ResetSensorValues();
         }
 
     }
 
-    void ResetSensorValues()
+    public void ResetSensorValues()
     {
         mySensorValues.Pressure_A = 0;
         mySensorValues.Pressure_B = 0;
