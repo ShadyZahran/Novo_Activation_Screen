@@ -12,6 +12,7 @@ public class QuestionsManager : MonoBehaviour
     public List<TMP_Text> Text_Answers_Data;
     public List<TMP_Text> Text_AnswerFields;
     public List<Question> AllQuestions;
+    public GameObject UI_SwipeToNextQuestion;
     int _currentQuestionIndex = 0;
     //int _current
     private void Awake()
@@ -24,7 +25,7 @@ public class QuestionsManager : MonoBehaviour
         {
             instance = this;
         }
-        UpdateAnswersData(Text_Answers_UI);
+        //UpdateAnswersData(Text_Answers_UI);
     }
 
     private void UpdateAnswersData(List<TMP_Text> text_Answers_UI)
@@ -38,6 +39,10 @@ public class QuestionsManager : MonoBehaviour
 
     public void UpdateQuestionScreen()
     {
+        UI_SwipeToNextQuestion.SetActive(false);
+        UpdateAnswersData(Text_Answers_UI);
+
+
         Text_Question.text = AllQuestions[_currentQuestionIndex].question;
         for (int i = 0; i < AllQuestions.Count; i++)
         {
@@ -56,7 +61,7 @@ public class QuestionsManager : MonoBehaviour
             }
 
         }
-        _currentQuestionIndex++;
+        ResetHighlights();
     }
 
     public void IsReadyToConfirm()
@@ -66,7 +71,15 @@ public class QuestionsManager : MonoBehaviour
 
     public void CheckResult()
     {
-        //return if answered correct or not
+        if (Text_Answers_Data.Count == 0)
+        {
+            //swipe XX to go to next question
+            UI_SwipeToNextQuestion.SetActive(true);
+        }
+        else
+        {
+            UI_SwipeToNextQuestion.SetActive(false);
+        }
     }
 
     public void ChooseAnswer()
@@ -90,7 +103,7 @@ public class QuestionsManager : MonoBehaviour
 
 
 
-            if (_indexHighlighted == Text_Answers_UI.Count - 1)
+            if (_indexHighlighted == Text_Answers_Data.Count - 1)
             {
                 _indexHighlighted = 0;
             }
@@ -102,7 +115,17 @@ public class QuestionsManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("list empty");
+            if (_currentQuestionIndex<AllQuestions.Count-1)
+            {
+                Debug.Log("swipe right to go to next question, will reset data");
+                _currentQuestionIndex++;
+                UpdateQuestionScreen();
+            }
+            else
+            {
+                Debug.Log("no more questions");
+            }
+            
         }
 
     }
@@ -125,7 +148,7 @@ public class QuestionsManager : MonoBehaviour
 
             if (_indexHighlighted == 0)
             {
-                _indexHighlighted = Text_Answers_UI.Count - 1;
+                _indexHighlighted = Text_Answers_Data.Count - 1;
             }
             else
             {
@@ -150,11 +173,13 @@ public class QuestionsManager : MonoBehaviour
                 {
                     Text_Answers_Data[i].gameObject.GetComponent<UIAnswer>().OnChooseHighlighted();
                     _indexToRemove = i;
-                    UpdateAnswerFields(Text_Answers_Data[i].text);
+                    PopulateAnswerFields(Text_Answers_Data[i].text);
+                    UpdateAnswerFieldsResults();
                 }
             }
             Text_Answers_Data.RemoveAt(_indexToRemove);
             UpdateHighlights();
+            CheckResult();
         }
         else
         {
@@ -174,7 +199,7 @@ public class QuestionsManager : MonoBehaviour
         }
     }
 
-    private void UpdateAnswerFields(string text)
+    private void PopulateAnswerFields(string text)
     {
         foreach (var field in Text_AnswerFields)
         {
@@ -182,6 +207,44 @@ public class QuestionsManager : MonoBehaviour
             {
                 field.text = text;
                 break;
+            }
+        }
+    }
+
+    private bool IsQuestionReadyToEvaluate()
+    {
+        bool result = true;
+        foreach (var field in Text_AnswerFields)
+        {
+            if (string.IsNullOrEmpty(field.text))
+            {
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    private void UpdateAnswerFieldsResults()
+    {
+        for (int i = 0; i < Text_AnswerFields.Count; i++)
+        {
+            if (!string.IsNullOrEmpty(Text_AnswerFields[i].text))
+            {
+                if (Text_AnswerFields[i].text == AllQuestions[_currentQuestionIndex].correctOrder[i])
+                {
+                    Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(true);
+                    Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
+                }
+                else
+                {
+                    Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
+                    Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(true);
+                }
+            }
+            else
+            {
+                Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
+                Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
             }
         }
     }
@@ -205,12 +268,20 @@ public class QuestionsManager : MonoBehaviour
             {
                 field.text = "";
             }
+
+            UpdateAnswerFieldsResults();
+            CheckResult();
         }
         else
         {
             Debug.Log("list empty");
         }
 
+    }
+
+    void ResetHighlights()
+    {
+        Question_OnSwipeDown();
     }
 
     [System.Serializable]
