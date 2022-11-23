@@ -7,11 +7,7 @@ public class UIAnswer : MonoBehaviour
     public GameObject highlighter, disabled;
     public bool isHighlighted = false;
     public bool isDisabled = false;
-    private void Awake()
-    {
-        highlighter = transform.GetChild(0).gameObject;
-        disabled = transform.GetChild(1).gameObject;
-    }
+    
 
     public void ToggleHighlight(bool flag)
     {

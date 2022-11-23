@@ -12,8 +12,8 @@ public class Gamemanager : MonoBehaviour
     public static Gamemanager instance;
 
     string RegistrationClientID = "DF4066902FF7C2A1";
-    public GameObject Menu_StartScreen, Menu_WelcomeScreen, Menu_TutorialScreen, Menu_QuestionScreen;
-    public TMP_Text Text_WelcomeScreen;
+    public GameObject Menu_StartScreen, Menu_WelcomeScreen, Menu_TutorialScreen, Menu_QuestionScreenA, Menu_Finish, Menu_Transition;
+    public TMP_Text Text_WelcomeScreen, Text_TransitionScreen;
     public int CheckRecordTimer = 5;
     public float _timer = 0f;
     public State GameState;
@@ -96,11 +96,11 @@ public class Gamemanager : MonoBehaviour
                 {
                     Debug.Log("tutorial: gesture A executed");
                     QuestionsManager.instance.UpdateQuestionScreen();
-                    LoadScreen(Menu_TutorialScreen, Menu_QuestionScreen);
+                    LoadScreen(Menu_TutorialScreen, Menu_QuestionScreenA);
                     GameState = State.Question1;
                     ResetSensorValues();
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                else if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
                     Debug.Log("fake gesture data");
                     OnDataReceived("1/0/0/1/0/0", null);
@@ -159,20 +159,184 @@ public class Gamemanager : MonoBehaviour
                     Debug.Log("fake gesture A swipe down data");
                     OnDataReceived("1/0/0/4/0/0", null);
                 }
-                
+
+                break;
+            case State.Transition1:
+                //check weight sensor on 2nd circle
+                if (mySensorValues.Pressure_B >= pressureThreshold)
+                {
+                    Debug.Log("pressure B pressed");
+                    QuestionsManager.instance.UpdateQuestionScreen();
+                    LoadScreen(Menu_Transition, Menu_QuestionScreenA);
+                    GameState = State.Question2;
+                    ResetSensorValues();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    Debug.Log("fake pressure data");
+                    OnDataReceived("0/1/0/0/0/0", null);
+                }
+                //move to tutorial
+                break;
+            case State.Transition2:
+                //check weight sensor on 2nd circle
+                if (mySensorValues.Pressure_C >= pressureThreshold)
+                {
+                    Debug.Log("pressure C pressed");
+                    QuestionsManager.instance.UpdateQuestionScreen();
+                    LoadScreen(Menu_Transition, Menu_QuestionScreenA);
+                    GameState = State.Question3;
+                    ResetSensorValues();
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    Debug.Log("fake pressure data");
+                    OnDataReceived("0/0/1/0/0/0", null);
+                }
+                //move to tutorial
                 break;
             case State.Question2:
+                //check gesture sensor for 2nd circle
+                //swipe left, right to move highlight on the answers
+                //swipe up, down to move the highlighted answer to the empty field
+                if (mySensorValues.Gesture_B == gesture_SwipeRight)
+                {
+                    Debug.Log("Question1: gesture B swiperight");
+                    QuestionsManager.instance.Question_OnSwipeRight();
+                    ResetSensorValues();
+                }
+                else if (mySensorValues.Gesture_B == gesture_SwipeLeft)
+                {
+                    Debug.Log("Question1: gesture B swipeleft");
+                    QuestionsManager.instance.Question_OnSwipeLeft();
+                    ResetSensorValues();
+                }
+                else if (mySensorValues.Gesture_B == gesture_SwipeUp)
+                {
+                    Debug.Log("Question1: gesture B swipeup");
+                    QuestionsManager.instance.Question_OnSwipeUp();
+                    ResetSensorValues();
+                }
+                else if (mySensorValues.Gesture_B == gesture_SwipeDown)
+                {
+                    Debug.Log("Question1: gesture B swipedown");
+                    QuestionsManager.instance.Question_OnSwipeDown();
+                    ResetSensorValues();
+                }
+
+
+                ////////// FAKE DATA ///////////
+                else if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    Debug.Log("fake gesture B swipe right data");
+                    OnDataReceived("0/1/0/0/1/0", null);
+                }
+                else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    Debug.Log("fake gesture B swipe left data");
+                    OnDataReceived("0/1/0/0/2/0", null);
+                }
+                else if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    Debug.Log("fake gesture B swipe up data");
+                    OnDataReceived("0/1/0/0/3/0", null);
+                }
+                else if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    Debug.Log("fake gesture B swipe down data");
+                    OnDataReceived("0/1/0/0/4/0", null);
+                }
                 break;
             case State.Question3:
+                //check gesture sensor for 2nd circle
+                //swipe left, right to move highlight on the answers
+                //swipe up, down to move the highlighted answer to the empty field
+                if (mySensorValues.Gesture_C == gesture_SwipeRight)
+                {
+                    Debug.Log("Question1: gesture C swiperight");
+                    QuestionsManager.instance.Question_OnSwipeRight();
+                    ResetSensorValues();
+                }
+                else if (mySensorValues.Gesture_C == gesture_SwipeLeft)
+                {
+                    Debug.Log("Question1: gesture C swipeleft");
+                    QuestionsManager.instance.Question_OnSwipeLeft();
+                    ResetSensorValues();
+                }
+                else if (mySensorValues.Gesture_C == gesture_SwipeUp)
+                {
+                    Debug.Log("Question1: gesture C swipeup");
+                    QuestionsManager.instance.Question_OnSwipeUp();
+                    ResetSensorValues();
+                }
+                else if (mySensorValues.Gesture_C == gesture_SwipeDown)
+                {
+                    Debug.Log("Question1: gesture C swipedown");
+                    QuestionsManager.instance.Question_OnSwipeDown();
+                    ResetSensorValues();
+                }
+
+
+                ////////// FAKE DATA ///////////
+                else if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    Debug.Log("fake gesture B swipe right data");
+                    OnDataReceived("0/0/1/0/0/1", null);
+                }
+                else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    Debug.Log("fake gesture B swipe left data");
+                    OnDataReceived("0/0/1/0/0/2", null);
+                }
+                else if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    Debug.Log("fake gesture B swipe up data");
+                    OnDataReceived("0/0/1/0/0/3", null);
+                }
+                else if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    Debug.Log("fake gesture B swipe down data");
+                    OnDataReceived("0/0/1/0/0/4", null);
+                }
                 break;
             case State.Finish:
+                if (_timer < CheckRecordTimer)
+                {
+                    _timer += Time.deltaTime;
+                }
+                else
+                {
+                    Debug.Log("going to start screen");
+                    //checking = false;
+                    _timer = 0;
+                    LoadScreen(Menu_Finish, Menu_StartScreen);
+                    checking = true;
+                    GameState = State.Start;
+                }
                 break;
             default:
                 break;
         }
     }
 
-
+    internal void LoadTransitionScreen(string transitionText)
+    {
+        Text_TransitionScreen.text = transitionText;
+        LoadScreen(Menu_QuestionScreenA, Menu_Transition);
+        if (GameState == State.Question1)
+        {
+            GameState = State.Transition1;
+        }
+        else if (GameState == State.Question2)
+        {
+            GameState = State.Transition2;
+        }
+        else if (GameState == State.Question3)
+        {
+            GameState = State.Finish;
+        }
+        
+    }
 
     private void GetRegistrationClientRecord()
     {
@@ -289,7 +453,9 @@ public class Gamemanager : MonoBehaviour
         Welcome,
         Tutorial,
         Question1,
+        Transition1,
         Question2,
+        Transition2,
         Question3,
         Finish
     }
@@ -302,7 +468,7 @@ public class Gamemanager : MonoBehaviour
     public void OnDataReceived(string data, UduinoDevice deviceName)
     {
         //Output.text = "Arduino data received: " + data;
-        Debug.Log("Arduino data received: " + data);
+        //Debug.Log("Arduino data received: " + data);
         ParseData(data);
     }
     // "Pressure_A/Pressure_B/Pressure_C/Gesture_A/Gesture_B/Gesture_C"
@@ -321,7 +487,7 @@ public class Gamemanager : MonoBehaviour
             mySensorValues.Gesture_A = int.Parse(values[3]);
             mySensorValues.Gesture_B = int.Parse(values[4]);
             mySensorValues.Gesture_C = int.Parse(values[5]);
-            Debug.Log("Sensor values parsed successfully");
+            //Debug.Log("Sensor values parsed successfully");
         }
 
     }
@@ -334,6 +500,6 @@ public class Gamemanager : MonoBehaviour
         mySensorValues.Gesture_A = 0;
         mySensorValues.Gesture_B = 0;
         mySensorValues.Gesture_C = 0;
-        Debug.Log("Sensor values reset for next data received");
+        //Debug.Log("Sensor values reset for next data received");
     }
 }
