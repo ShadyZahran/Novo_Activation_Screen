@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestionsManager : MonoBehaviour
 {
     public static QuestionsManager instance;
+    public Image BG_QuestionScreen;
+    public List<Sprite> BG_Questions;
     public TMP_Text Text_Question;
     public List<TMP_Text> Text_Answers_UI;
     public List<TMP_Text> Text_Answers_Data;
@@ -16,6 +19,7 @@ public class QuestionsManager : MonoBehaviour
     int _currentQuestionIndex = 0;
     string RegistrationClientID = "DF4066902FF7C2A1";
     public AudioClip clip_wrong, clip_correct, clip_victory;
+    public GameObject Question_Arrow, Question_Or;
     public int CurrentQuestionIndex { get => _currentQuestionIndex; set => _currentQuestionIndex = value; }
 
     //int _current
@@ -64,15 +68,17 @@ public class QuestionsManager : MonoBehaviour
             }
             for (int i = 0; i < Text_AnswerFields.Count; i++)
             {
-                if (i == 1 || i == 2)
+                if (i == 1 || i == 3)
                 {
-                    Text_AnswerFields[i].gameObject.SetActive(true);
+                    Text_AnswerFields[i].transform.parent.gameObject.SetActive(true);
                 }
                 else
                 {
-                    Text_AnswerFields[i].gameObject.SetActive(false);
+                    Text_AnswerFields[i].transform.parent.gameObject.SetActive(false);
                 }
             }
+            Question_Arrow.SetActive(false);
+            Question_Or.SetActive(true);
         }
         else
         {
@@ -88,9 +94,12 @@ public class QuestionsManager : MonoBehaviour
                 }
                 Text_Answers_Data[y].text = AllQuestions[CurrentQuestionIndex].answers[y];
                 Text_Answers_Data[y].gameObject.SetActive(true);
-                Text_AnswerFields[y].gameObject.SetActive(true);
+                Text_AnswerFields[y].transform.parent.gameObject.SetActive(true);
             }
+            Question_Arrow.SetActive(true);
+            Question_Or.SetActive(false);
         }
+        BG_QuestionScreen.sprite = BG_Questions[CurrentQuestionIndex];
 
 
 
@@ -162,8 +171,23 @@ public class QuestionsManager : MonoBehaviour
             if (CurrentQuestionIndex < AllQuestions.Count - 1)
             {
                 Debug.Log("swipe right to go to next question, will reset data");
+                string goal = "";
+                    switch (CurrentQuestionIndex)
+                {
+                    case 0:
+                        goal = "first";
+                        break;
+                    case 1:
+                        goal = "second";
+                        break;
+                    case 2:
+                        goal = "third";
+                        break;
+                    default:
+                        break;
+                }
                 CurrentQuestionIndex++;
-                Gamemanager.instance.LoadTransitionScreen("Please move on to the next goal");
+                Gamemanager.instance.LoadTransitionScreen("You have achieved your "+goal+" goal please move on to the next goal");
                 //UpdateQuestionScreen();
             }
             else
@@ -364,20 +388,20 @@ public class QuestionsManager : MonoBehaviour
                 {
                     if (HasCorrectAnswer(Text_AnswerFields[i].text))
                     {
-                        Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(true);
-                        Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
+                        //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(true);
+                        //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
                     }
                     else
                     {
-                        Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
-                        Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(true);
-                        isBlocking = true;
+                        //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
+                        //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(true);
+                        //isBlocking = true;
                     }
                 }
                 else
                 {
-                    Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
-                    Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
+                    //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
+                    //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
                 }
             }
         }
@@ -389,20 +413,20 @@ public class QuestionsManager : MonoBehaviour
                 {
                     if (Text_AnswerFields[i].text == AllQuestions[CurrentQuestionIndex].correctOrder[i])
                     {
-                        Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(true);
-                        Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
+                        //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(true);
+                        //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
                     }
                     else
                     {
-                        Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
-                        Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(true);
-                        isBlocking = true;
+                        //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
+                        //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(true);
+                        //isBlocking = true;
                     }
                 }
                 else
                 {
-                    Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
-                    Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
+                    //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleCorrect(false);
+                    //Text_AnswerFields[i].gameObject.GetComponent<UIAnswerField>().ToggleWrong(false);
                 }
             }
         }
@@ -434,7 +458,7 @@ public class QuestionsManager : MonoBehaviour
         {
             for (int i = 0; i < Text_AnswerFields.Count; i++)
             {
-                if (Text_AnswerFields[i].gameObject.activeInHierarchy && string.IsNullOrEmpty(Text_AnswerFields[i].text))
+                if (Text_AnswerFields[i].transform.parent.gameObject.activeInHierarchy && string.IsNullOrEmpty(Text_AnswerFields[i].text))
                 {
                     foundIndex = i;
                     break;

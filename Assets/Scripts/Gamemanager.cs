@@ -36,6 +36,8 @@ public class Gamemanager : MonoBehaviour
     SensorValues mySensorValues;
     public bool clearData;
 
+    
+
     public PlayerInfo CurrentPlayer { get => currentPlayer; set => currentPlayer = value; }
 
     private void Awake()

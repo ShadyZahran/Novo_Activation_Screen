@@ -18,7 +18,15 @@ public class UIAnswer : MonoBehaviour
     public void ToggleDisable(bool flag)
     {
         isDisabled = flag;
-        disabled.SetActive(flag);
+        //disabled.SetActive(flag);
+        if (flag)
+        {
+            this.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(0.2f, 0.2f, 0.2f);
+        }
+        else
+        {
+            this.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(1.0f, 1.0f, 1.0f);
+        }
     }
     private void OnEnable()
     {
@@ -30,7 +38,8 @@ public class UIAnswer : MonoBehaviour
         if (isHighlighted)
         {
             ToggleHighlight(false);
-            ToggleDisable(true);
+            //ToggleDisable(true);
+            this.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(0.2f, 0.2f, 0.2f);
         }
         else
         {
