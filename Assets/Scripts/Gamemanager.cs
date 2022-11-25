@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using TMPro;
 using Uduino;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Gamemanager : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class Gamemanager : MonoBehaviour
     public bool checking = true;
 
     List<PlayerInfo> Allplayers;
+    PlayerInfo currentPlayer;
 
     //public int Pressure_A, Pressure_B, Pressure_C, Gesture_A, Gesture_B, Gesture_C;
     public int pressureThreshold = 1;
@@ -30,6 +32,8 @@ public class Gamemanager : MonoBehaviour
 
     SensorValues mySensorValues;
     public bool clearData;
+
+    public PlayerInfo CurrentPlayer { get => currentPlayer; set => currentPlayer = value; }
 
     private void Awake()
     {
@@ -280,27 +284,27 @@ public class Gamemanager : MonoBehaviour
                 ////////// FAKE DATA ///////////
                 else if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
-                    Debug.Log("fake gesture B swipe right data");
+                    Debug.Log("fake gesture C swipe right data");
                     OnDataReceived("0/0/1/0/0/1", null);
                 }
                 else if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
-                    Debug.Log("fake gesture B swipe left data");
+                    Debug.Log("fake gesture C swipe left data");
                     OnDataReceived("0/0/1/0/0/2", null);
                 }
                 else if (Input.GetKeyDown(KeyCode.UpArrow))
                 {
-                    Debug.Log("fake gesture B swipe up data");
+                    Debug.Log("fake gesture C swipe up data");
                     OnDataReceived("0/0/1/0/0/3", null);
                 }
                 else if (Input.GetKeyDown(KeyCode.DownArrow))
                 {
-                    Debug.Log("fake gesture B swipe down data");
+                    Debug.Log("fake gesture C swipe down data");
                     OnDataReceived("0/0/1/0/0/4", null);
                 }
                 break;
             case State.Finish:
-                if (_timer < CheckRecordTimer)
+                if (_timer < (CheckRecordTimer+2))
                 {
                     _timer += Time.deltaTime;
                 }
@@ -309,14 +313,22 @@ public class Gamemanager : MonoBehaviour
                     Debug.Log("going to start screen");
                     //checking = false;
                     _timer = 0;
+                    ResetGameValues();
                     LoadScreen(Menu_Finish, Menu_StartScreen);
                     checking = true;
                     GameState = State.Start;
+                    //SceneManager.LoadScene(0);
                 }
                 break;
             default:
                 break;
         }
+    }
+
+    internal void LoadFinishScreen()
+    {
+        LoadScreen(Menu_QuestionScreenA, Menu_Finish);
+        GameState = State.Finish;
     }
 
     internal void LoadTransitionScreen(string transitionText)
@@ -335,7 +347,7 @@ public class Gamemanager : MonoBehaviour
         {
             GameState = State.Finish;
         }
-        
+
     }
 
     private void GetRegistrationClientRecord()
@@ -358,26 +370,38 @@ public class Gamemanager : MonoBehaviour
             Debug.Log("No Data or no Flag");
             checking = true;
         }
-        else if (obj.Data["Flag"].Value == "New")
-        {
-            Debug.Log("New record found ");
-            Debug.Log("flag: " + obj.Data["Flag"].Value);
-            //extract and add the player to the all players list
-            AddPlayer(obj.Data);
-            UpdateWelcomeScreen();
-        }
         else
         {
-            checking = true;
-            Debug.Log("Old record found ");
-            Debug.Log("flag: " + obj.Data["Flag"].Value);
+            currentPlayer.Name = obj.Data["Name"].Value;
+            //currentPlayer.Phone = obj.Data["Phone"].Value;
+            //currentPlayer.Email = obj.Data["Email"].Value;
+            currentPlayer.Flag = obj.Data["Flag"].Value;
+
+            if (CurrentPlayer.Flag != "Old" )
+            {
+                //if (obj.Data["Flag"].Value == "New")
+                //{
+                Debug.Log("New record found ");
+                Debug.Log("flag: " + CurrentPlayer.Flag);
+                //extract and add the player to the all players list
+                AddPlayer(CurrentPlayer);
+                PlayFabAuthService.Instance.UpdateUser(RegistrationClientID, CurrentPlayer);
+                UpdateWelcomeScreen();
+            }
+            else
+            {
+                checking = true;
+                Debug.Log("Old record found ");
+                Debug.Log("flag: " + CurrentPlayer.Flag);
+            }
         }
+
     }
 
     private void UpdateWelcomeScreen()
     {
-        Text_WelcomeScreen.text = "Welcome Dr." + Allplayers[Allplayers.Count - 1].Name + ". Please step inside the first circle to start";
-        LoadScreen(Menu_StartScreen, Menu_WelcomeScreen);
+        //Text_WelcomeScreen.text = "Welcome Dr." + Allplayers[Allplayers.Count - 1].Name + ". Please step inside the first circle to start";
+        //LoadScreen(Menu_StartScreen, Menu_WelcomeScreen);
         GameState = State.Welcome;
     }
 
@@ -387,9 +411,10 @@ public class Gamemanager : MonoBehaviour
         toEnable.SetActive(true);
     }
 
-    private void AddPlayer(Dictionary<string, UserDataRecord> data)
+    private void AddPlayer(PlayerInfo data)
     {
-        PlayerInfo NewPlayer = new PlayerInfo(data["Name"].Value, data["Email"].Value, data["Phone"].Value, data["Flag"].Value);
+        //PlayerInfo NewPlayer = new PlayerInfo(data["Name"].Value, data["Email"].Value, data["Phone"].Value, data["Flag"].Value);
+        PlayerInfo NewPlayer = data;
         NewPlayer.PrintPlayer();
         Allplayers.Add(NewPlayer);
         Debug.Log("Player: " + NewPlayer.Name + " added.");
@@ -412,17 +437,17 @@ public class Gamemanager : MonoBehaviour
     [System.Serializable]
     public struct PlayerInfo
     {
-        public string Name, Email, Phone, Flag;
-        public PlayerInfo(string fName, string fEmail, string fPhone, string fFlag)
+        public string Name, /*Email, Phone,*/ Flag;
+        public PlayerInfo(string fName, /*string fEmail, string fPhone,*/ string fFlag)
         {
             Name = fName;
-            Email = fEmail;
-            Phone = fPhone;
+            //Email = fEmail;
+            //Phone = fPhone;
             Flag = fFlag;
         }
         public void PrintPlayer()
         {
-            Debug.Log(Name + " " + Email + " " + Phone);
+            Debug.Log(Name /*+ " " + Email + " " + Phone*/);
         }
     }
 
@@ -501,5 +526,12 @@ public class Gamemanager : MonoBehaviour
         mySensorValues.Gesture_B = 0;
         mySensorValues.Gesture_C = 0;
         //Debug.Log("Sensor values reset for next data received");
+    }
+
+    public void ResetGameValues()
+    {
+        currentPlayer = new PlayerInfo();
+        Allplayers.RemoveAt(0);
+        QuestionsManager.instance.CurrentQuestionIndex = 0;
     }
 }

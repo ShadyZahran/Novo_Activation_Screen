@@ -5,6 +5,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using LoginResult = PlayFab.ClientModels.LoginResult;
 using System;
+using static Gamemanager;
 //using PlayFab.Json;
 
 #if FACEBOOK
@@ -30,7 +31,7 @@ public enum Authtypes
 
 public class PlayFabAuthService
 {
-
+    public string targetPlayerID = "F0A7306CF96769F8";
     //Events to subscribe to for this service
     public delegate void DisplayAuthenticationEvent();
     public static event DisplayAuthenticationEvent OnDisplayAuthentication;
@@ -654,8 +655,8 @@ public class PlayFabAuthService
             {
                 Name = userData["Name"],
                 PlayerID = userData["PlayerID"],
-                Email = userData["Email"],
-                Phone = userData["Phone"],
+                //Email = userData["Email"],
+                //Phone = userData["Phone"],
                 Flag = userData["Flag"]
             }
         }, OnSuccess, OnFail);
@@ -693,6 +694,50 @@ public class PlayFabAuthService
         }, OnSuccess, OnFail);
     }
 
+    public void UpdateUser(string playerID, PlayerInfo player)
+    {
+        Dictionary<string, string> userDataToSend = new Dictionary<string, string>
+        {
+            {"PlayerID", playerID},
+            {"Name", player.Name},
+            //{"Email", player.Email},
+            //{"Phone", player.Phone},
+            {"Flag", "InProgress"}
+        };
+        PlayFabAuthService.Instance.SetUserData(userDataToSend, OnUpdateUserSuccessful, OnUpdateUserFail);
+    }
 
+    public void OnUpdateUserSuccessful(ExecuteCloudScriptResult obj)
+    {
+
+        Debug.Log("Successfull updating user data");
+        // CloudScript (Legacy) returns arbitrary results, so you have to evaluate them one step and one parameter at a time
+        //Debug.Log(JsonWrapper.SerializeObject(obj.FunctionResult));
+        Debug.Log(obj.FunctionResult);
+
+
+        //ResetFields();
+        Gamemanager.instance.ResetMenus();
+    }
+
+    public void OnUpdateUserFail(PlayFabError obj)
+    {
+        Debug.Log("Got error updating user data");
+        Debug.Log(obj);
+        Debug.Log(obj.GenerateErrorReport());
+    }
+
+    public void FinalizeUser(string playerID, PlayerInfo player)
+    {
+        Dictionary<string, string> userDataToSend = new Dictionary<string, string>
+        {
+            {"PlayerID", playerID},
+            {"Name", player.Name},
+            //{"Email", player.Email},
+            //{"Phone", player.Phone},
+            {"Flag", "Old"}
+        };
+        PlayFabAuthService.Instance.SetUserData(userDataToSend, OnUpdateUserSuccessful, OnUpdateUserFail);
+    }
 
 }

@@ -110,8 +110,8 @@ public class RegistrationWindowView : UIScreen
         NewPlayer = new PlayerInfo
         {
             Name = obj.Data["Name"].Value,
-            Email = obj.Data["Email"].Value,
-            Phone = obj.Data["Phone"].Value,
+            //Email = obj.Data["Email"].Value,
+            //Phone = obj.Data["Phone"].Value,
             Flag = obj.Data["Flag"].Value
         };
         if (string.IsNullOrEmpty(NewPlayer.Name))

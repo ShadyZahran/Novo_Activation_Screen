@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Main.unity
+    guid: 228ebd6000e9a644986e2da81beee05c
+  - enabled: 1
     path: Assets/Scenes/TestArduino.unity
     guid: c889d085155763145aa43f838206d81f
   m_configObjects: {}
