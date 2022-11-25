@@ -8051,11 +8051,11 @@ MonoBehaviour:
   Transition1: {fileID: 21300000, guid: 8c20c4f3875d79049a7b99c545bcfcea, type: 3}
   Transition2: {fileID: 21300000, guid: 3e215d683c55fd34e8b4a9d671165865, type: 3}
   Image_TransitionScreen: {fileID: 1966651317}
-  CheckRecordTimer: 5
+  CheckRecordTimer: 2
   _timer: 0
   GameState: 0
   checking: 1
-  pressureThreshold: 100
+  pressureThreshold: 1
   gesture_SwipeRight: 1
   gesture_SwipeLeft: 2
   gesture_SwipeUp: 3
