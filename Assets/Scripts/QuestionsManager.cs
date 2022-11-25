@@ -15,7 +15,7 @@ public class QuestionsManager : MonoBehaviour
     public GameObject UI_SwipeToNextQuestion;
     int _currentQuestionIndex = 0;
     string RegistrationClientID = "DF4066902FF7C2A1";
-    public AudioClip clip_wrong, clip_correct;
+    public AudioClip clip_wrong, clip_correct, clip_victory;
     public int CurrentQuestionIndex { get => _currentQuestionIndex; set => _currentQuestionIndex = value; }
 
     //int _current
@@ -104,6 +104,7 @@ public class QuestionsManager : MonoBehaviour
         {
             //swipe XX to go to next question
             UI_SwipeToNextQuestion.SetActive(true);
+            this.gameObject.GetComponent<AudioSource>().PlayOneShot(clip_victory);
         }
         else
         {
@@ -222,20 +223,33 @@ public class QuestionsManager : MonoBehaviour
             {
                 if (Text_Answers_Data.Count > 0)
                 {
-                    int _indexToRemove = 0;
+                    int _indexToRemove = -1;
                     for (int i = 0; i < Text_Answers_Data.Count; i++)
                     {
                         if (Text_Answers_Data[i].gameObject.GetComponent<UIAnswer>().isHighlighted)
                         {
-                            Text_Answers_Data[i].gameObject.GetComponent<UIAnswer>().OnChooseHighlighted();
-                            _indexToRemove = i;
-                            PopulateAnswerFields(Text_Answers_Data[i].text);
-                            UpdateAnswerFieldsResults();
+                            if (IsAnswerCorrect(Text_Answers_Data[i].text))
+                            {
+                                Text_Answers_Data[i].gameObject.GetComponent<UIAnswer>().OnChooseHighlighted();
+                                _indexToRemove = i;
+                                PopulateAnswerFields(Text_Answers_Data[i].text);
+                                UpdateAnswerFieldsResults();
+                                this.gameObject.GetComponent<AudioSource>().PlayOneShot(clip_correct);
+                            }
+                            else
+                            {
+                                Debug.Log("wrong answer");
+                                this.gameObject.GetComponent<AudioSource>().PlayOneShot(clip_wrong);
+                            }
+
                         }
                     }
-                    Text_Answers_Data.RemoveAt(_indexToRemove);
-                    UpdateAnswersHighlights();
-                    ShouldMoveToNextQuestion();
+                    if (_indexToRemove != -1)
+                    {
+                        Text_Answers_Data.RemoveAt(_indexToRemove);
+                        UpdateAnswersHighlights();
+                        ShouldMoveToNextQuestion();
+                    }
                 }
                 else
                 {
@@ -248,20 +262,33 @@ public class QuestionsManager : MonoBehaviour
         {
             if (Text_Answers_Data.Count > 0)
             {
-                int _indexToRemove = 0;
+                int _indexToRemove = -1;
                 for (int i = 0; i < Text_Answers_Data.Count; i++)
                 {
                     if (Text_Answers_Data[i].gameObject.GetComponent<UIAnswer>().isHighlighted)
                     {
-                        Text_Answers_Data[i].gameObject.GetComponent<UIAnswer>().OnChooseHighlighted();
-                        _indexToRemove = i;
-                        PopulateAnswerFields(Text_Answers_Data[i].text);
-                        UpdateAnswerFieldsResults();
+                        if (IsAnswerCorrect(Text_Answers_Data[i].text))
+                        {
+                            Text_Answers_Data[i].gameObject.GetComponent<UIAnswer>().OnChooseHighlighted();
+                            _indexToRemove = i;
+                            PopulateAnswerFields(Text_Answers_Data[i].text);
+                            UpdateAnswerFieldsResults();
+                            this.gameObject.GetComponent<AudioSource>().PlayOneShot(clip_correct);
+                        }
+                        else
+                        {
+                            Debug.Log("wrong answer");
+                            this.gameObject.GetComponent<AudioSource>().PlayOneShot(clip_wrong);
+                        }
                     }
                 }
-                Text_Answers_Data.RemoveAt(_indexToRemove);
-                UpdateAnswersHighlights();
-                ShouldMoveToNextQuestion();
+                if (_indexToRemove!=-1)
+                {
+                    Text_Answers_Data.RemoveAt(_indexToRemove);
+                    UpdateAnswersHighlights();
+                    ShouldMoveToNextQuestion();
+                }
+                
             }
             else
             {
@@ -395,9 +422,39 @@ public class QuestionsManager : MonoBehaviour
         return result;
     }
 
-    private void IsAnswerCorrect()
+    private bool IsAnswerCorrect(string answerText)
     {
+        bool result = false;
+        int foundIndex = -1;
+        if (_currentQuestionIndex == 2)
+        {
+            result = HasCorrectAnswer(answerText);
+        }
+        else
+        {
+            for (int i = 0; i < Text_AnswerFields.Count; i++)
+            {
+                if (Text_AnswerFields[i].gameObject.activeInHierarchy && string.IsNullOrEmpty(Text_AnswerFields[i].text))
+                {
+                    foundIndex = i;
+                    break;
+                }
+            }
+            if (foundIndex != -1)
+            {
+                if (answerText != AllQuestions[CurrentQuestionIndex].correctOrder[foundIndex])
+                {
+                    Debug.Log("wrong answer");
+                }
+                else
+                {
+                    result = true;
+                }
+                    
+            }
+        }
 
+        return result;
     }
     void ResetHighlights()
     {

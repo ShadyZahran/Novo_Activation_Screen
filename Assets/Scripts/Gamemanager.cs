@@ -7,6 +7,7 @@ using TMPro;
 using Uduino;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Gamemanager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class Gamemanager : MonoBehaviour
     string RegistrationClientID = "DF4066902FF7C2A1";
     public GameObject Menu_StartScreen, Menu_WelcomeScreen, Menu_TutorialScreen, Menu_QuestionScreenA, Menu_Finish, Menu_Transition;
     public TMP_Text Text_WelcomeScreen, Text_TransitionScreen;
+    public Sprite Transition1, Transition2;
+    public Image Image_TransitionScreen;
     public int CheckRecordTimer = 5;
     public float _timer = 0f;
     public State GameState;
@@ -338,10 +341,12 @@ public class Gamemanager : MonoBehaviour
         if (GameState == State.Question1)
         {
             GameState = State.Transition1;
+            Image_TransitionScreen.sprite = Transition1;
         }
         else if (GameState == State.Question2)
         {
             GameState = State.Transition2;
+            Image_TransitionScreen.sprite = Transition2;
         }
         else if (GameState == State.Question3)
         {

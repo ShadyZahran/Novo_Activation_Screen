@@ -6513,6 +6513,9 @@ MonoBehaviour:
   Menu_Transition: {fileID: 1851484682}
   Text_WelcomeScreen: {fileID: 1171714080}
   Text_TransitionScreen: {fileID: 1540740499}
+  Transition1: {fileID: 21300000, guid: b43817ee9dda16c41a628a705526a021, type: 3}
+  Transition2: {fileID: 21300000, guid: 4f1db872b2efa324c806fcbb54e19e1c, type: 3}
+  Image_TransitionScreen: {fileID: 1966651317}
   CheckRecordTimer: 5
   _timer: 0
   GameState: 0
@@ -6588,6 +6591,7 @@ MonoBehaviour:
   UI_SwipeToNextQuestion: {fileID: 818186579}
   clip_wrong: {fileID: 8300000, guid: 5c322f28fbfae8942b5a213171bec5ac, type: 3}
   clip_correct: {fileID: 8300000, guid: 00d7f5c852e50c5449a0960ed1d45718, type: 3}
+  clip_victory: {fileID: 8300000, guid: 9ae8c3932974c23449522193bbcae181, type: 3}
 --- !u!82 &1377585377
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9168,7 +9172,7 @@ GameObject:
   - component: {fileID: 1966651318}
   - component: {fileID: 1966651317}
   m_Layer: 5
-  m_Name: BG
+  m_Name: BG_TransitionScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
