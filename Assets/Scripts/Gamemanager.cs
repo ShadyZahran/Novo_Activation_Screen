@@ -11,10 +11,22 @@ using UnityEngine.UI;
 
 public class Gamemanager : MonoBehaviour
 {
-    public static Gamemanager instance;
+    public enum State
+    {
+        Login,
+        Start,
+        Welcome,
+        Tutorial,
+        Question1,
+        Transition1,
+        Question2,
+        Transition2,
+        Question3,
+        Finish
+    }
 
-    string RegistrationClientID = "DF4066902FF7C2A1";
-    public GameObject Menu_StartScreen, Menu_WelcomeScreen, Menu_TutorialScreen, Menu_QuestionScreenA, Menu_Finish, Menu_Transition;
+    public static Gamemanager instance;
+    public GameObject Menu_StartScreen, Menu_TutorialScreen, Menu_QuestionScreenA, Menu_Finish, Menu_Transition;
     public TMP_Text Text_WelcomeScreen, Text_TransitionScreen;
     public Sprite Transition1, Transition2;
     public Image Image_TransitionScreen;
@@ -23,20 +35,21 @@ public class Gamemanager : MonoBehaviour
     public State GameState;
     public bool checking = true;
 
-    List<PlayerInfo> Allplayers;
-    PlayerInfo currentPlayer;
-
     //public int Pressure_A, Pressure_B, Pressure_C, Gesture_A, Gesture_B, Gesture_C;
     public int pressureThreshold = 1;
     public int gesture_SwipeRight = 1;
     public int gesture_SwipeLeft = 2;
     public int gesture_SwipeUp = 3;
     public int gesture_SwipeDown = 4;
-
-    SensorValues mySensorValues;
     public bool clearData;
 
-    
+    List<PlayerInfo> Allplayers;
+    PlayerInfo currentPlayer;
+
+    SensorValues mySensorValues;
+
+    string RegistrationClientID = "DF4066902FF7C2A1";
+
 
     public PlayerInfo CurrentPlayer { get => currentPlayer; set => currentPlayer = value; }
 
@@ -50,7 +63,7 @@ public class Gamemanager : MonoBehaviour
         {
             instance = this;
         }
-        GameState = State.Login;
+        GameState = State.Welcome;
         Allplayers = new List<PlayerInfo>();
         if (clearData)
         {
@@ -87,7 +100,7 @@ public class Gamemanager : MonoBehaviour
                 if (mySensorValues.Pressure_A >= pressureThreshold)
                 {
                     Debug.Log("pressure A pressed");
-                    LoadScreen(Menu_WelcomeScreen, Menu_TutorialScreen);
+                    LoadScreen(Menu_StartScreen, Menu_TutorialScreen);
                     GameState = State.Tutorial;
                     ResetSensorValues();
                 }
@@ -109,7 +122,7 @@ public class Gamemanager : MonoBehaviour
                     GameState = State.Question1;
                     ResetSensorValues();
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha1))
+                else if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
                     Debug.Log("fake gesture data");
                     OnDataReceived("1/0/0/1/0/0", null);
@@ -315,13 +328,13 @@ public class Gamemanager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("going to start screen");
+                    Debug.Log("going to welcome screen");
                     //checking = false;
                     _timer = 0;
                     ResetGameValues();
                     LoadScreen(Menu_Finish, Menu_StartScreen);
                     checking = true;
-                    GameState = State.Start;
+                    GameState = State.Welcome;
                     //SceneManager.LoadScene(0);
                 }
                 break;
@@ -441,34 +454,6 @@ public class Gamemanager : MonoBehaviour
     }
 
 
-    [System.Serializable]
-    public struct PlayerInfo
-    {
-        public string Name, /*Email, Phone,*/ Flag;
-        public PlayerInfo(string fName, /*string fEmail, string fPhone,*/ string fFlag)
-        {
-            Name = fName;
-            //Email = fEmail;
-            //Phone = fPhone;
-            Flag = fFlag;
-        }
-        public void PrintPlayer()
-        {
-            Debug.Log(Name /*+ " " + Email + " " + Phone*/);
-        }
-    }
-
-    public struct SensorValues
-    {
-        public int Pressure_A;
-        public int Pressure_B;
-        public int Pressure_C;
-        public int Gesture_A;
-        public int Gesture_B;
-        public int Gesture_C;
-    }
-
-
     void PrintAllPlayers()
     {
         Debug.Log("printing all players");
@@ -476,20 +461,6 @@ public class Gamemanager : MonoBehaviour
         {
             player.PrintPlayer();
         }
-    }
-
-    public enum State
-    {
-        Login,
-        Start,
-        Welcome,
-        Tutorial,
-        Question1,
-        Transition1,
-        Question2,
-        Transition2,
-        Question3,
-        Finish
     }
 
     public void UpdateArduinoValues()
@@ -503,6 +474,7 @@ public class Gamemanager : MonoBehaviour
         //Debug.Log("Arduino data received: " + data);
         ParseData(data);
     }
+
     // "Pressure_A/Pressure_B/Pressure_C/Gesture_A/Gesture_B/Gesture_C"
     void ParseData(string data)
     {
@@ -538,7 +510,37 @@ public class Gamemanager : MonoBehaviour
     public void ResetGameValues()
     {
         currentPlayer = new PlayerInfo();
-        Allplayers.RemoveAt(0);
+        //Allplayers.RemoveAt(0);
         QuestionsManager.instance.CurrentQuestionIndex = 0;
+    }
+
+
+    [System.Serializable]
+    public struct PlayerInfo
+    {
+        public string Name, /*Email, Phone,*/ Flag;
+
+        public PlayerInfo(string fName, /*string fEmail, string fPhone,*/ string fFlag)
+        {
+            Name = fName;
+            //Email = fEmail;
+            //Phone = fPhone;
+            Flag = fFlag;
+        }
+
+        public void PrintPlayer()
+        {
+            Debug.Log(Name /*+ " " + Email + " " + Phone*/);
+        }
+    }
+
+    public struct SensorValues
+    {
+        public int Pressure_A;
+        public int Pressure_B;
+        public int Pressure_C;
+        public int Gesture_A;
+        public int Gesture_B;
+        public int Gesture_C;
     }
 }

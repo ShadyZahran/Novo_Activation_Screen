@@ -187,14 +187,14 @@ public class QuestionsManager : MonoBehaviour
                         break;
                 }
                 CurrentQuestionIndex++;
-                Gamemanager.instance.LoadTransitionScreen("You have achieved your "+goal+" goal please move on to the next goal");
+                Gamemanager.instance.LoadTransitionScreen("You have achieved the "+goal+" goal\n Please move on to the next goal");
                 //UpdateQuestionScreen();
             }
             else
             {
                 Debug.Log("no more questions, moving to finish screen");
                 Gamemanager.instance.LoadFinishScreen();
-                PlayFabAuthService.Instance.FinalizeUser(RegistrationClientID, Gamemanager.instance.CurrentPlayer);
+                //PlayFabAuthService.Instance.FinalizeUser(RegistrationClientID, Gamemanager.instance.CurrentPlayer);
             }
 
         }
