@@ -16,10 +16,12 @@ public class QuestionsManager : MonoBehaviour
     public List<TMP_Text> Text_AnswerFields;
     public List<Question> AllQuestions;
     public GameObject UI_SwipeToNextQuestion;
+    public GameObject UI_WrongChoice;
     int _currentQuestionIndex = 0;
     string RegistrationClientID = "DF4066902FF7C2A1";
     public AudioClip clip_wrong, clip_correct, clip_victory;
     public GameObject Question_Arrow, Question_Or;
+    public Sprite Sprite_DefaultAnswerField, Sprite_HighlightedAnswerField;
     public int CurrentQuestionIndex { get => _currentQuestionIndex; set => _currentQuestionIndex = value; }
 
     //int _current
@@ -48,6 +50,7 @@ public class QuestionsManager : MonoBehaviour
     public void UpdateQuestionScreen()
     {
         UI_SwipeToNextQuestion.SetActive(false);
+        UI_WrongChoice.SetActive(false);
         UpdateAnswersData(Text_Answers_UI);
 
         Text_Question.text = AllQuestions[CurrentQuestionIndex].question;
@@ -102,7 +105,7 @@ public class QuestionsManager : MonoBehaviour
         BG_QuestionScreen.sprite = BG_Questions[CurrentQuestionIndex];
 
 
-
+        UpdateAnswerFieldsHighlights();
         ResetHighlights();
     }
 
@@ -143,6 +146,7 @@ public class QuestionsManager : MonoBehaviour
         //{
         if (!IsAllAnswerFieldFilled())
         {
+            UI_WrongChoice.SetActive(false);
             int _indexHighlighted = 0;
             for (int i = 0; i < Text_Answers_Data.Count; i++)
             {
@@ -207,6 +211,7 @@ public class QuestionsManager : MonoBehaviour
         //{
         if (!IsAllAnswerFieldFilled())
         {
+            UI_WrongChoice.SetActive(false);
             int _indexHighlighted = 0;
             for (int i = Text_Answers_Data.Count - 1; i >= 0; i--)
             {
@@ -263,6 +268,7 @@ public class QuestionsManager : MonoBehaviour
                             else
                             {
                                 Debug.Log("wrong answer");
+                                UI_WrongChoice.SetActive(true);
                                 this.gameObject.GetComponent<AudioSource>().PlayOneShot(clip_wrong);
                             }
 
@@ -302,6 +308,7 @@ public class QuestionsManager : MonoBehaviour
                         else
                         {
                             Debug.Log("wrong answer");
+                            UI_WrongChoice.SetActive(true);
                             this.gameObject.GetComponent<AudioSource>().PlayOneShot(clip_wrong);
                         }
                     }
@@ -324,6 +331,7 @@ public class QuestionsManager : MonoBehaviour
 
     public void Question_OnSwipeDown()
     {
+        UI_WrongChoice.SetActive(false);
         isBlocking = false;
         UpdateAnswersData(Text_Answers_UI);
         if (Text_Answers_Data.Count > 0)
@@ -344,6 +352,7 @@ public class QuestionsManager : MonoBehaviour
             }
 
             UpdateAnswerFieldsResults();
+            //UpdateAnswerFieldsHighlights();
             ShouldMoveToNextQuestion();
         }
         else
@@ -380,6 +389,7 @@ public class QuestionsManager : MonoBehaviour
     private bool isBlocking = false;
     private void UpdateAnswerFieldsResults()
     {
+        UpdateAnswerFieldsHighlights();
         if (CurrentQuestionIndex == 2)
         {
             for (int i = 0; i < Text_AnswerFields.Count; i++)
@@ -503,11 +513,30 @@ public class QuestionsManager : MonoBehaviour
 
             UpdateAnswerFieldsResults();
             UI_SwipeToNextQuestion.SetActive(false);
+            UI_WrongChoice.SetActive(false);
         }
         else
         {
             Debug.Log("list empty");
         }
+    }
+
+    public void UpdateAnswerFieldsHighlights()
+    {
+        foreach (var field in Text_AnswerFields)
+        {
+            field.transform.parent.GetChild(0).gameObject.GetComponent<Image>().sprite = Sprite_DefaultAnswerField;
+        }
+        for (int i = 0; i < Text_AnswerFields.Count; i++)
+        {
+            if (string.IsNullOrEmpty(Text_AnswerFields[i].text) && Text_AnswerFields[i].gameObject.activeInHierarchy)
+            {
+                //activate highlight
+                Text_AnswerFields[i].transform.parent.GetChild(0).gameObject.GetComponent<Image>().sprite = Sprite_HighlightedAnswerField;
+                break;
+            }
+        }
+        
     }
 
     [System.Serializable]

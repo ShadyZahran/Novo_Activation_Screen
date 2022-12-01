@@ -119,6 +119,7 @@ public class Gamemanager : MonoBehaviour
                     Debug.Log("tutorial: gesture A executed");
                     QuestionsManager.instance.UpdateQuestionScreen();
                     LoadScreen(Menu_TutorialScreen, Menu_QuestionScreenA);
+                    QuestionsManager.instance.UpdateAnswerFieldsHighlights();
                     GameState = State.Question1;
                     ResetSensorValues();
                 }
@@ -190,6 +191,7 @@ public class Gamemanager : MonoBehaviour
                     Debug.Log("pressure B pressed");
                     QuestionsManager.instance.UpdateQuestionScreen();
                     LoadScreen(Menu_Transition, Menu_QuestionScreenA);
+                    QuestionsManager.instance.UpdateAnswerFieldsHighlights();
                     GameState = State.Question2;
                     ResetSensorValues();
                 }
@@ -207,6 +209,7 @@ public class Gamemanager : MonoBehaviour
                     Debug.Log("pressure C pressed");
                     QuestionsManager.instance.UpdateQuestionScreen();
                     LoadScreen(Menu_Transition, Menu_QuestionScreenA);
+                    QuestionsManager.instance.UpdateAnswerFieldsHighlights();
                     GameState = State.Question3;
                     ResetSensorValues();
                 }
