@@ -7892,8 +7892,8 @@ MonoBehaviour:
   Menu_Transition: {fileID: 1851484682}
   Text_WelcomeScreen: {fileID: 0}
   Text_TransitionScreen: {fileID: 1540740499}
-  Transition1: {fileID: 21300000, guid: 8c20c4f3875d79049a7b99c545bcfcea, type: 3}
-  Transition2: {fileID: 21300000, guid: 3e215d683c55fd34e8b4a9d671165865, type: 3}
+  Transition1: {fileID: 21300000, guid: 18f139ce043daeb4da55b47ebea2abb6, type: 3}
+  Transition2: {fileID: 21300000, guid: 18f139ce043daeb4da55b47ebea2abb6, type: 3}
   Image_TransitionScreen: {fileID: 1966651317}
   CheckRecordTimer: 2
   _timer: 0
@@ -9563,6 +9563,76 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1595902767}
   m_CullTransparentMesh: 1
+--- !u!1 &1625235677
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1625235679}
+  - component: {fileID: 1625235678}
+  m_Layer: 0
+  m_Name: Expire
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1625235678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625235677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5319f450a5ef49149b5ecdbe7ef988b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ExpirationMode: 0
+  RemoteDateTimeCheck: 1
+  CheckMode: 0
+  FreezeTime: -1
+  QuitTime: 2
+  OnExpired:
+    m_PersistentCalls:
+      m_Calls: []
+  OnQuit:
+    m_PersistentCalls:
+      m_Calls: []
+  FirstStartYear: 2017
+  FirstStartMonth: 1
+  FirstStartDay: 1
+  FirstStartHour: 0
+  FirstStartMinute: 0
+  FirstStartSecond: 0
+  Days: 1
+  Hours: 0
+  Minutes: 0
+  Seconds: 0
+  Year: 2022
+  Month: 12
+  Day: 3
+  Hour: 0
+  Minute: 0
+  Second: 0
+--- !u!4 &1625235679
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625235677}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 479.4042, y: 292.4116, z: -23.161364}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1695256640
 GameObject:
   m_ObjectHideFlags: 0
