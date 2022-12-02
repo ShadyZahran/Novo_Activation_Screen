@@ -153,12 +153,12 @@ public class Gamemanager : MonoBehaviour
                     QuestionsManager.instance.Question_OnSwipeUp();
                     ResetSensorValues();
                 }
-                else if (mySensorValues.Gesture_A == gesture_SwipeDown)
-                {
-                    Debug.Log("Question1: gesture A swipedown");
-                    QuestionsManager.instance.Question_OnSwipeDown();
-                    ResetSensorValues();
-                }
+                //else if (mySensorValues.Gesture_A == gesture_SwipeDown)
+                //{
+                //    Debug.Log("Question1: gesture A swipedown");
+                //    QuestionsManager.instance.Question_OnSwipeUp();
+                //    ResetSensorValues();
+                //}
 
 
                 ////////// FAKE DATA ///////////
@@ -242,12 +242,12 @@ public class Gamemanager : MonoBehaviour
                     QuestionsManager.instance.Question_OnSwipeUp();
                     ResetSensorValues();
                 }
-                else if (mySensorValues.Gesture_B == gesture_SwipeDown)
-                {
-                    Debug.Log("Question1: gesture B swipedown");
-                    QuestionsManager.instance.Question_OnSwipeDown();
-                    ResetSensorValues();
-                }
+                //else if (mySensorValues.Gesture_B == gesture_SwipeDown)
+                //{
+                //    Debug.Log("Question1: gesture B swipedown");
+                //    QuestionsManager.instance.Question_OnSwipeUp();
+                //    ResetSensorValues();
+                //}
 
 
                 ////////// FAKE DATA ///////////
@@ -294,12 +294,12 @@ public class Gamemanager : MonoBehaviour
                     QuestionsManager.instance.Question_OnSwipeUp();
                     ResetSensorValues();
                 }
-                else if (mySensorValues.Gesture_C == gesture_SwipeDown)
-                {
-                    Debug.Log("Question1: gesture C swipedown");
-                    QuestionsManager.instance.Question_OnSwipeDown();
-                    ResetSensorValues();
-                }
+                //else if (mySensorValues.Gesture_C == gesture_SwipeDown)
+                //{
+                //    Debug.Log("Question1: gesture C swipedown");
+                //    QuestionsManager.instance.Question_OnSwipeUp();
+                //    ResetSensorValues();
+                //}
 
 
                 ////////// FAKE DATA ///////////
